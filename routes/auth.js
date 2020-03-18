@@ -3,6 +3,7 @@ const { check, body } = require('express-validator/check');
 
 const authController = require('../controllers/auth');
 const User = require('../models/user');
+const isAllow = require('../util/permission')
 
 const router = express.Router();
 

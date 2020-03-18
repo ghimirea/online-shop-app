@@ -31,6 +31,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js"
   },
-  "author": "Ashim G, Moe H. Selam S. Bereket T.",
+  "author": "Ashim Ghimire, Mohammed Hasan, Selamwit Shibru, Bereket Teklu",
   "license": "ISC"
 }

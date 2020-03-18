@@ -2,12 +2,24 @@ const fs = require('fs');
 const path = require('path');
 const stripe = require('stripe')('sk_test_Flc1Upp19T0q8ZgmKGDVJUI400j9emUSTr');
 
-const PDFDocument = require('pdfkit');
+//const PDFDocument = require('pdfkit');
 
 const Product = require('../models/product');
 const Order = require('../models/order');
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 8;
+
+// exports.getProducts = (req, res, next) => {
+//   Product.find()
+//     .then(products => {
+//       res.render('admin/products', {
+//         pageTitle: 'Products',
+//         path: '/admin/products',
+//         prods: products
+//       });
+//     })
+//     .catch(err => console.log(err));
+// };
 
 exports.getProducts = (req, res, next) => {
   const page = +req.query.page || 1;
@@ -67,8 +79,8 @@ exports.getIndex = (req, res, next) => {
     .then(numProducts => {
       totalItems = numProducts;
       return Product.find()
-        .skip((page - 1) * ITEMS_PER_PAGE)
-        .limit(ITEMS_PER_PAGE);
+        // .skip((page - 1) * ITEMS_PER_PAGE)
+        // .limit(ITEMS_PER_PAGE);
     })
     .then(products => {
       res.render('shop/index', {
@@ -190,7 +202,12 @@ exports.getCheckoutSuccess = (req, res, next) => {
     .execPopulate()
     .then(user => {
       const products = user.cart.items.map(i => {
-        return { quantity: i.quantity, product: { ...i.productId._doc } };
+        return {
+          quantity: i.quantity,
+          product: {
+            ...i.productId._doc
+          }
+        };
       });
       const order = new Order({
         user: {
@@ -220,7 +237,12 @@ exports.postOrder = (req, res, next) => {
     .execPopulate()
     .then(user => {
       const products = user.cart.items.map(i => {
-        return { quantity: i.quantity, product: { ...i.productId._doc } };
+        return {
+          quantity: i.quantity,
+          product: {
+            ...i.productId._doc
+          }
+        };
       });
       const order = new Order({
         user: {
@@ -245,7 +267,9 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  Order.find({ 'user.userId': req.user._id })
+  Order.find({
+      'user.userId': req.user._id
+    })
     .then(orders => {
       res.render('shop/orders', {
         path: '/orders',
@@ -293,11 +317,11 @@ exports.getInvoice = (req, res, next) => {
           .fontSize(14)
           .text(
             prod.product.title +
-              ' - ' +
-              prod.quantity +
-              ' x ' +
-              '$' +
-              prod.product.price
+            ' - ' +
+            prod.quantity +
+            ' x ' +
+            '$' +
+            prod.product.price
           );
       });
       pdfDoc.text('---');
